@@ -273,6 +273,10 @@ class GameBoard {
         return currentPlayer;
     }
 
+    public Player getOtherPlayer() {
+        return (currentPlayer == player1) ? player2 : player1;
+    }
+
     public boolean isGameWon() {
         return gameWon;
     }
@@ -317,8 +321,10 @@ public class TicTacToeInTicTacToe {
             }
 
             printGameBoard(gameBoard);
-            System.out.println(gameBoard.getCurrentPlayer().getName() + " wins the game!");
+            System.out.println(gameBoard.getOtherPlayer().getName() + " wins the game!");
             System.out.println("Score: " + gameBoard.getCurrentPlayer().getName() + ": " + gameBoard.getCurrentPlayer().getScore());
+            System.out.println(gameBoard.getOtherPlayer().getName() + ": " + gameBoard.getOtherPlayer().getScore());
+
 
             System.out.print("Do you want to play again? (yes/no): ");
             String response = scanner.next();
@@ -334,19 +340,26 @@ public class TicTacToeInTicTacToe {
 
     private static void printGameBoard(GameBoard gameBoard) {
         System.out.println("Current Game Board:");
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                SmallBoard smallBoard = gameBoard.getBoard(i, j);
-                System.out.print("[" + (smallBoard.isWon() ? smallBoard.getWinner() : " ") + "]");
-                for (int k = 0; k < 3; k++) {
-                    for (int l = 0; l < 3; l++) {
-                        System.out.print(smallBoard.getCell(k, l).getValue() + " ");
+        for (int i = 0; i < 3; i++) {  // row of large boards
+            // tree rows of cells for each row of large boards
+            for (int cellRow = 0; cellRow < 3; cellRow++) {
+                for (int j = 0; j < 3; j++) {  // column of large boards
+                    SmallBoard smallBoard = gameBoard.getBoard(i, j);
+                    // winer status only on the firt row of cells
+                    if (cellRow == 0) {
+                        System.out.print("[" + (smallBoard.isWon() ? smallBoard.getWinner() : " ") + "]");
+                    } else {
+                        System.out.print("   ");
+                    }
+                    // Cells for this row
+                    for (int cellCol = 0; cellCol < 3; cellCol++) {
+                        System.out.print(smallBoard.getCell(cellRow, cellCol).getValue().equals("") ? "- " : smallBoard.getCell(cellRow, cellCol).getValue() + " ");
                     }
                     System.out.print(" | ");
                 }
                 System.out.println();
             }
-            System.out.println("---------");
+            System.out.println("-".repeat(50));  // Separators
         }
     }
 }
